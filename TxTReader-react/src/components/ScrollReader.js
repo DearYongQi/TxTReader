@@ -225,6 +225,11 @@ const ScrollReader = ({
         </div>
       )}
       
+      {/* 显示阅读进度 */}
+      <div className="reader-progress">
+        {progress}%
+      </div>
+      
       {content ? (
         <div ref={contentRef} className="scroll-content">
           {formatContent()}

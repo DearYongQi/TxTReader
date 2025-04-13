@@ -7,8 +7,34 @@ const Datastore = require('nedb');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// 初始化数据库
-const db = new Datastore({ filename: path.join(__dirname, 'favorites.db'), autoload: true });
+// 初始化数据库 - 改进版本，处理权限问题
+let db;
+try {
+  const dbPath = path.join(__dirname, 'favorites.db');
+  
+  // 尝试先访问文件，检查权限
+  try {
+    fs.accessSync(dbPath, fs.constants.R_OK | fs.constants.W_OK);
+  } catch (err) {
+    console.warn(`无法访问数据库文件 (${err.code}): ${dbPath}`);
+    console.warn('将使用内存数据库代替');
+    throw new Error('使用内存数据库');
+  }
+  
+  db = new Datastore({ filename: dbPath, autoload: true });
+  console.log('成功加载文件数据库');
+} catch (err) {
+  // 如果无法访问文件或发生任何错误，使用内存数据库
+  db = new Datastore();
+  console.log('使用内存数据库作为后备方案');
+  
+  // 添加一个示例记录以便前端有测试数据（可选）
+  db.insert({
+    title: "示例文本",
+    id: "示例文本.txt",
+    createdAt: new Date().toISOString(),
+  });
+}
 
 // 中间件
 app.use(cors());
@@ -77,9 +103,10 @@ app.get('/api/books/content/:fileName', (req, res) => {
 app.get('/api/favorites', (req, res) => {
   db.find({}, (err, favorites) => {
     if (err) {
+      console.error('获取收藏列表失败:', err);
       return res.status(500).json({ success: false, message: '获取收藏列表失败', error: err.message });
     }
-    res.json({ success: true, data: favorites });
+    res.json({ success: true, data: favorites || [] });
   });
 });
 
@@ -102,12 +129,18 @@ app.post('/api/favorites', (req, res) => {
     createdAt: new Date().toISOString()
   };
 
-  db.insert(favorite, (err, newFavorite) => {
-    if (err) {
-      return res.status(500).json({ success: false, message: '添加收藏失败', error: err.message });
-    }
-    res.json({ success: true, data: newFavorite });
-  });
+  try {
+    db.insert(favorite, (err, newFavorite) => {
+      if (err) {
+        console.error('添加收藏失败:', err);
+        return res.status(500).json({ success: false, message: '添加收藏失败', error: err.message });
+      }
+      res.json({ success: true, data: newFavorite });
+    });
+  } catch (err) {
+    console.error('添加收藏错误:', err);
+    res.status(500).json({ success: false, message: '添加收藏错误', error: err.message });
+  }
 });
 
 /**
@@ -118,17 +151,23 @@ app.post('/api/favorites', (req, res) => {
 app.delete('/api/favorites/:id', (req, res) => {
   const id = decodeURIComponent(req.params.id);
   
-  db.remove({ id }, {}, (err, numRemoved) => {
-    if (err) {
-      return res.status(500).json({ success: false, message: '取消收藏失败', error: err.message });
-    }
-    
-    if (numRemoved === 0) {
-      return res.status(404).json({ success: false, message: '收藏不存在' });
-    }
-    
-    res.json({ success: true, message: '取消收藏成功' });
-  });
+  try {
+    db.remove({ id }, {}, (err, numRemoved) => {
+      if (err) {
+        console.error('取消收藏失败:', err);
+        return res.status(500).json({ success: false, message: '取消收藏失败', error: err.message });
+      }
+      
+      if (numRemoved === 0) {
+        return res.status(404).json({ success: false, message: '收藏不存在' });
+      }
+      
+      res.json({ success: true, message: '取消收藏成功' });
+    });
+  } catch (err) {
+    console.error('取消收藏错误:', err);
+    res.status(500).json({ success: false, message: '取消收藏错误', error: err.message });
+  }
 });
 
 // 启动服务器
