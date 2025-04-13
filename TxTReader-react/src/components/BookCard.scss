@@ -1,0 +1,215 @@
+@import '../styles/variables.scss';
+
+.book-card {
+  height: 220px;
+  max-width: 220px;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  // 调整ant-card样式
+  &.ant-card {
+    .ant-card-body {
+      padding: 0;
+      height: 100%;
+    }
+  }
+  
+  // 书本封面
+  .book-cover {
+    height: 75%;
+    background: linear-gradient(145deg, $primary-light, $primary-color);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    // 书本图标
+    .book-icon {
+      font-size: 46px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+    
+    // 书脊效果
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 8px;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.15);
+    }
+    
+    // 书页效果
+    .book-pages {
+      position: absolute;
+      top: 5px;
+      right: 0;
+      bottom: 5px;
+      width: 2px;
+      background: rgba(255, 255, 255, 0.6);
+    }
+  }
+  
+  // 书本信息
+  .book-info {
+    height: 25%;
+    padding: 10px;
+    background: white;
+    position: relative;
+    display: flex;
+    align-items: center;
+    
+    .book-title {
+      margin: 0;
+      padding-right: 28px;
+      font-size: $font-size-base;
+      font-weight: 500;
+      color: $light-text;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    // 收藏按钮
+    .favorite-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: $font-size-base;
+      color: $light-secondary-text;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        transform: translateY(-50%) scale(1.2);
+      }
+      
+      &.active {
+        color: #FFD700;
+      }
+      
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+  
+  // 收藏标记
+  &.favorite::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 25px;
+    height: 25px;
+    background: $primary-color;
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+  }
+}
+
+// 暗黑模式适配
+body.dark {
+  .book-card {
+    background: $dark-card-background;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    
+    &:hover {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .book-cover {
+      background: linear-gradient(145deg, darken($primary-color, 10%), darken($primary-dark, 5%));
+    }
+    
+    .book-info {
+      background: $dark-card-background;
+      
+      .book-title {
+        color: $dark-text;
+      }
+      
+      .favorite-btn {
+        color: $dark-secondary-text;
+      }
+    }
+  }
+}
+
+// 响应式适配
+@media (max-width: $breakpoint-md) {
+  .book-card {
+    height: 200px;
+    max-width: 195px;
+    
+    .book-cover {
+      .book-icon {
+        font-size: 40px;
+      }
+    }
+    
+    .book-info {
+      .book-title {
+        font-size: $font-size-sm;
+      }
+    }
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .book-card {
+    height: 180px;
+    max-width: 175px;
+    
+    .book-cover {
+      .book-icon {
+        font-size: 35px;
+      }
+    }
+    
+    .book-info {
+      padding: 8px;
+      
+      .book-title {
+        font-size: 13px;
+      }
+      
+      .favorite-btn {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .book-card {
+    height: 170px;
+    max-width: 155px;
+    
+    .book-info {
+      padding: 6px;
+      
+      .book-title {
+        font-size: 12px;
+        padding-right: 20px;
+      }
+    }
+  }
+} 

@@ -1,0 +1,123 @@
+@import '../styles/variables.scss';
+
+.home-page {
+  min-height: 100vh;
+  padding-top: $header-height;
+  background-color: #f8f8f8;
+  
+  body.dark & {
+    background-color: #1f1f1f;
+  }
+  
+  .content-container {
+    padding: 24px 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+    
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+      padding: 15px 0;
+      position: relative;
+      
+      // 书架顶部移除
+      &::before {
+        display: none;
+      }
+    }
+    
+    .loading-container, .error-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 300px;
+      
+      p {
+        margin-top: 16px;
+        font-size: $font-size-md;
+        color: $light-secondary-text;
+        
+        body.dark & {
+          color: $dark-secondary-text;
+        }
+      }
+    }
+    
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+      padding-bottom: 20px;
+    }
+  }
+}
+
+// 分类标题样式
+.section-title {
+  font-size: $font-size-lg;
+  margin: 20px 0 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid $primary-color;
+  color: $light-text;
+  
+  body.dark & {
+    color: $dark-text;
+  }
+}
+
+// 响应式调整
+@media (max-width: $breakpoint-md) {
+  .home-page {
+    .content-container {
+      padding: 16px 12px;
+      
+      .books-grid {
+        grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+        gap: 16px;
+      }
+      
+      .loading-container, .error-container {
+        height: 200px;
+        
+        p {
+          font-size: $font-size-base;
+        }
+      }
+      
+      .pagination-container {
+        margin-top: 30px;
+      }
+    }
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .home-page {
+    .content-container {
+      .books-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 14px;
+      }
+    }
+  }
+  
+  .section-title {
+    font-size: $font-size-base;
+    margin: 15px 0 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-page {
+    .content-container {
+      padding: 12px 10px;
+      
+      .books-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 10px;
+      }
+    }
+  }
+} 

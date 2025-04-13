@@ -1,0 +1,232 @@
+@import '../styles/variables.scss';
+
+:root {
+  --reader-background-color: #fff8f5;
+  --reader-text-color: #333333;
+  --eye-protection-background: #f0f8e6 !important;
+  --eye-protection-text-color: #3a3a3a !important;
+}
+
+.reader-page {
+  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  transition: background-color $transition-duration, color $transition-duration;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  
+  // 确保背景颜色和文本颜色应用到整个页面
+  &, .page-flip-container, .page-content, .scroll-reader-container {
+    background-color: var(--reader-background-color);
+    color: var(--reader-text-color);
+  }
+  
+  // 护眼模式样式
+  &.eye-protection {
+    --reader-background-color: #f0f8e6 !important;
+    --reader-text-color: #3a3a3a !important;
+    background-color: #f0f8e6 !important;
+    color: #3a3a3a !important;
+    
+    &::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 128, 0, 0.02);
+      pointer-events: none;
+      z-index: 10;
+    }
+  }
+  
+  .reader-container {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin: 0;
+    padding: 0;
+    height: calc(100vh - 64px);
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--reader-background-color);
+    color: var(--reader-text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    
+    body.dark & {
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  .loading-container, .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+    
+    p {
+      margin-top: 16px;
+      font-size: $font-size-md;
+      color: $light-secondary-text;
+      text-align: center;
+      
+      body.dark & {
+        color: $dark-secondary-text;
+      }
+    }
+    
+    button {
+      margin-top: 20px;
+      padding: 8px 16px;
+      background-color: $primary-color;
+      color: white;
+      border: none;
+      border-radius: $border-radius;
+      cursor: pointer;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      
+      &:hover {
+        background-color: $primary-dark;
+      }
+    }
+  }
+}
+
+// 全局应用护眼模式效果
+.eye-protection-active {
+  filter: sepia(10%) brightness(102%);
+  
+  .reader-container,
+  .scroll-reader-container,
+  .pagination-reader-container {
+    background-color: var(--eye-protection-background);
+    color: var(--eye-protection-text-color);
+  }
+  
+  // 护眼模式覆盖层
+  &::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 10;
+    background-color: rgba(0, 128, 0, 0.02);
+    mix-blend-mode: multiply;
+  }
+}
+
+// 阅读器打开动画
+.reader-page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.reader-page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.reader-page-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reader-page-exit-active {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+// 响应式样式
+@media (max-width: $breakpoint-md) {
+  .reader-page {
+    .loading-container, .error-container {
+      p {
+        font-size: $font-size-base;
+      }
+    }
+  }
+}
+
+// 滚动阅读器样式
+.scroll-reader-container {
+  // height: calc(100vh - 50px);
+  height: 100vh;
+  width: 100%;
+  overflow-y: auto;
+  padding: 15px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--reader-background-color);
+  color: var(--reader-text-color);
+  
+  .scroll-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    
+    p {
+      margin-bottom: 1em;
+      text-align: justify;
+      word-break: break-word;
+    }
+    
+    .empty-line {
+      min-height: 1em;
+    }
+  }
+  
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  
+  // 自动滚动指示器
+  .auto-scroll-indicator {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    z-index: 100;
+  }
+  
+  // 护眼模式下的样式
+  &.eye-protection {
+    background-color: var(--eye-protection-background);
+    color: var(--eye-protection-text-color);
+  }
+}
+
+// 分页阅读器样式
+.pagination-reader-container {
+  // 分页阅读器的样式...
+}
+
+// 响应式样式
+@media (max-width: 768px) {
+  .scroll-reader-container {
+    padding: 10px;
+    
+    .scroll-content {
+      padding: 10px;
+    }
+  }
+}

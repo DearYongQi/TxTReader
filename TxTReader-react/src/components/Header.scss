@@ -1,0 +1,149 @@
+@import '../styles/variables.scss';
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  z-index: $z-index-fixed;
+  transition: all $transition-duration;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  
+  .container {
+    height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+  
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+
+    .logo {
+      font-size: $font-size-lg;
+      font-weight: bold;
+      margin: 0;
+      padding: 0;
+      
+      a {
+        color: $primary-color;
+        transition: color $transition-duration-fast;
+        
+        &:hover {
+          color: $primary-dark;
+        }
+      }
+    }
+    
+    .search-box {
+      flex: 1;
+      max-width: 500px;
+      margin: 0 20px;
+      
+      .ant-input-affix-wrapper {
+        border-radius: 20px;
+        height: 36px;
+        
+        .ant-input-prefix {
+          margin-right: 8px;
+        }
+        
+        .ant-input {
+          font-size: $font-size-base;
+        }
+      }
+      
+      @media (max-width: $breakpoint-md) {
+        max-width: 300px;
+      }
+      
+      @media (max-width: $breakpoint-sm) {
+        margin: 0 10px;
+        max-width: 180px;
+        
+        .ant-input-affix-wrapper {
+          height: 32px;
+        }
+      }
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      
+      .theme-switch {
+        display: flex;
+        align-items: center;
+        margin-right: 16px;
+        
+        .theme-icon {
+          margin-right: 8px;
+          font-size: $font-size-md;
+        }
+      }
+    }
+  }
+}
+
+// 适配移动设备
+@media (max-width: $breakpoint-sm) {
+  .header {
+    height: 50px;
+    
+    .header-content {
+      .logo {
+        font-size: $font-size-base;
+      }
+      
+      .header-actions {
+        .theme-switch {
+          margin-right: 8px;
+          
+          .theme-icon {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+.main-nav {
+  display: flex;
+  gap: 16px;
+  
+  a {
+    color: $light-text;
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    
+    body.dark & {
+      color: $dark-text;
+    }
+    
+    &:hover {
+      color: $primary-color;
+    }
+    
+    &.active-nav-item {
+      color: $primary-color;
+      
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: $primary-color;
+      }
+    }
+  }
+} 

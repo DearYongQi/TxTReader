@@ -1,0 +1,7 @@
+# 忽略所有node依赖包
+node_modules/
+
+# 忽略TxTReader-nodejs/xiaoshuo文件夹中的文件，但保留文件夹
+TxTReader-nodejs/xiaoshuo/*
+# 不忽略.gitkeep文件，确保文件夹被包含
+!TxTReader-nodejs/xiaoshuo/.gitkeep 
